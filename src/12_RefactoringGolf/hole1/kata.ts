@@ -6,43 +6,66 @@ export class Game {
   private _board: Board = new Board();
 
   public Play(symbol: string, x: number, y: number): void {
-    //if first move
-    if (this._lastSymbol == ' ') {
-      //if player is X
-      if (symbol == 'O') {
-        throw new Error('Invalid first player');
-      }
-    }
-    //if not first move but player repeated
-    else if (symbol == this._lastSymbol) {
-      throw new Error('Invalid next player');
-    }
-    //if not first move but play on an already played tile
-    else if (this._board.TileAt(x, y).Symbol != ' ') {
+    this.checkFirstMove(symbol);
+    this.checkPlayerRepeat(symbol);
+    this.checkAlreadyPlayed(x, y);
+
+    this.updateLastSymbol(symbol);
+    this.addTile(symbol, x, y);
+  }
+
+  private addTile(symbol: string, x: number, y: number) {
+    this._board.AddTileAt(symbol, x, y);
+  }
+
+  private updateLastSymbol(symbol: string) {
+    this._lastSymbol = symbol;
+  }
+
+  private checkAlreadyPlayed(x: number, y: number) {
+    if (this._board.TileAt(x, y).Symbol != ' ') {
       throw new Error('Invalid position');
     }
+  }
 
-    // update game state
-    this._lastSymbol = symbol;
-    this._board.AddTileAt(symbol, x, y);
+  private checkPlayerRepeat(symbol: string) {
+    if (symbol == this._lastSymbol) {
+      throw new Error('Invalid next player');
+    }
+  }
+
+  private checkFirstMove(symbol: string) {
+    if (this._lastSymbol == ' ') {
+      this.checkFirstPlayer(symbol);
+    }
+  }
+
+  private checkFirstPlayer(symbol: string) {
+    if (symbol == 'O') {
+      throw new Error('Invalid first player');
+    }
   }
 
   public Winner(): string {
     for (let i of [0, 1, 2]) {
-      if (
-          this._board.TileAt(i, 0)!.Symbol != ' ' &&
-          this._board.TileAt(i, 1)!.Symbol != ' ' &&
-          this._board.TileAt(i, 2)!.Symbol != ' '
-      ) {
-        if (
-            this._board.TileAt(i, 0)!.Symbol == this._board.TileAt(i, 1)!.Symbol &&
-            this._board.TileAt(i, 2)!.Symbol == this._board.TileAt(i, 1)!.Symbol
-        ) {
+      if (this.isRowFull(i)) {
+        if (this.isRowFullAndWithSameSymbol(i)) {
           return this._board.TileAt(i, 0)!.Symbol;
         }
       }
     }
     return ' ';
+  }
+
+  private isRowFullAndWithSameSymbol(i: number) {
+    return this._board.TileAt(i, 0)!.Symbol == this._board.TileAt(i, 1)!.Symbol &&
+        this._board.TileAt(i, 2)!.Symbol == this._board.TileAt(i, 1)!.Symbol;
+  }
+
+  private isRowFull(i: number) {
+    return this._board.TileAt(i, 0)!.Symbol != ' ' &&
+        this._board.TileAt(i, 1)!.Symbol != ' ' &&
+        this._board.TileAt(i, 2)!.Symbol != ' ';
   }
 }
 
