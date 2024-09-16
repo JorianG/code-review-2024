@@ -1,5 +1,7 @@
 pour chaque participants:
 
-NOM prenom 
+GOUAGOUT Jorian
+CLEMENT Thibault
+LUGAGNE Theo
 
 ...
