@@ -129,6 +129,4 @@ class Board {
     const tile: Tile = { X: x, Y: y, Symbol: symbol };
     this._plays.find((t: Tile) => t.X == x && t.Y == y)!.Symbol = symbol;
   }
-
-  
 }
