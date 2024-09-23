@@ -15,23 +15,20 @@ export class Game {
   private readonly thirdColumn = 2;
 
   public Play(symbol: string, x: number, y: number): void {
-    this.validateFirstMove(symbol);
     this.validatePlayer(symbol);
+
     this.validatePositionIsEmpty(x, y);
 
     this.updateLastPlayer(symbol);
     this.updateBoard(symbol, x, y);
   }
 
-  private validateFirstMove(player: string) {
+  private validatePlayer(player: string) {
     if (this._lastSymbol == this.emptyPlay) {
       if (player == this.playerO) {
         throw new Error('Invalid first player');
       }
     }
-  }
-
-  private validatePlayer(player: string) {
     if (player == this._lastSymbol) {
       throw new Error('Invalid next player');
     }
@@ -52,69 +49,28 @@ export class Game {
   }
 
   public Winner(): string {
-    if (this.isFirstRowFull() && this.isFirstRowFullWithSameSymbol()) {
-      return this._board.TileAt(this.firstRow, this.firstColumn)!.Symbol;
+    for (const row of [this.firstRow, this.secondRow, this.thirdRow]) {
+      if (this.isRowFull(row) && this.isRowFullWithSameSymbol(row)) {
+        return this._board.TileAt(row, this.firstColumn)!.Symbol;
+      }
     }
-
-    if (this.isSecondRowFull() && this.isSecondRowFullWithSameSymbol()) {
-      return this._board.TileAt(this.secondRow, this.firstColumn)!.Symbol;
-    }
-
-    if (this.isThirdRowFull() && this.isThirdRowFullWithSameSymbol()) {
-      return this._board.TileAt(this.thirdRow, this.firstColumn)!.Symbol;
-    }
-
     return this.emptyPlay;
   }
 
-  private isFirstRowFull() {
+  private isRowFull(row: number) {
     return (
-      this._board.TileAt(this.firstRow, this.firstColumn)!.Symbol != this.emptyPlay &&
-      this._board.TileAt(this.firstRow, this.secondColumn)!.Symbol != this.emptyPlay &&
-      this._board.TileAt(this.firstRow, this.thirdColumn)!.Symbol != this.emptyPlay
+      this._board.TileAt(row, this.firstColumn)!.Symbol != this.emptyPlay &&
+      this._board.TileAt(row, this.secondColumn)!.Symbol != this.emptyPlay &&
+      this._board.TileAt(row, this.thirdColumn)!.Symbol != this.emptyPlay
     );
   }
 
-  private isFirstRowFullWithSameSymbol() {
+  private isRowFullWithSameSymbol(row: number) {
     return (
-      this._board.TileAt(this.firstRow, this.firstColumn)!.Symbol ==
-        this._board.TileAt(this.firstRow, this.secondColumn)!.Symbol &&
-      this._board.TileAt(this.firstRow, this.thirdColumn)!.Symbol ==
-        this._board.TileAt(this.firstRow, this.secondColumn)!.Symbol
-    );
-  }
-
-  private isSecondRowFull() {
-    return (
-      this._board.TileAt(this.secondRow, this.firstColumn)!.Symbol != this.emptyPlay &&
-      this._board.TileAt(this.secondRow, this.secondColumn)!.Symbol != this.emptyPlay &&
-      this._board.TileAt(this.secondRow, this.thirdColumn)!.Symbol != this.emptyPlay
-    );
-  }
-
-  private isSecondRowFullWithSameSymbol() {
-    return (
-      this._board.TileAt(this.secondRow, this.firstColumn)!.Symbol ==
-        this._board.TileAt(this.secondRow, this.secondColumn)!.Symbol &&
-      this._board.TileAt(this.secondRow, this.thirdColumn)!.Symbol ==
-        this._board.TileAt(this.secondRow, this.secondColumn)!.Symbol
-    );
-  }
-
-  private isThirdRowFull() {
-    return (
-      this._board.TileAt(this.thirdRow, this.firstColumn)!.Symbol != this.emptyPlay &&
-      this._board.TileAt(this.thirdRow, this.secondColumn)!.Symbol != this.emptyPlay &&
-      this._board.TileAt(this.thirdRow, this.thirdColumn)!.Symbol != this.emptyPlay
-    );
-  }
-
-  private isThirdRowFullWithSameSymbol() {
-    return (
-      this._board.TileAt(this.thirdRow, this.firstColumn)!.Symbol ==
-        this._board.TileAt(this.thirdRow, this.secondColumn)!.Symbol &&
-      this._board.TileAt(this.thirdRow, this.thirdColumn)!.Symbol ==
-        this._board.TileAt(this.thirdRow, this.secondColumn)!.Symbol
+      this._board.TileAt(row, this.firstColumn)!.Symbol ==
+        this._board.TileAt(row, this.secondColumn)!.Symbol &&
+      this._board.TileAt(row, this.thirdColumn)!.Symbol ==
+        this._board.TileAt(row, this.secondColumn)!.Symbol
     );
   }
 }
